@@ -1,0 +1,13 @@
+version: '3.5'
+
+services:
+  db:
+    image: postgres
+    container_name: dev_camp_db
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - ./tmp/db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
