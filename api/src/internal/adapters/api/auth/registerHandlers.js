@@ -1,17 +1,33 @@
 const asyncHandler = require('#common/asyncHandler');
 
-module.exports = ({ router, service, authMiddleware }) => {
+module.exports = ({ router, service }) => {
   router.post(
     '/login',
     asyncHandler(async (req, res) => {
-      const token = await service.authorize(req.body.email, req.body.password);
-      if (token) {
-        res.cookie('session_id', token, {
-          maxAge: 3600,
-          httpOnly: true,
-        });
-
+      const { accessToken, refreshToken } = await service.authorize(
+        req.body.email,
+        req.body.password,
+      );
+      if (accessToken) {
         return res.send({
+          accessToken,
+          refreshToken,
+          success: true,
+        });
+      }
+      res.sendStatus(401);
+    }),
+  );
+  router.post(
+    '/refresh',
+    asyncHandler(async (req, res) => {
+      const { accessToken, refreshToken } = await service.refresh(
+        req.body.refreshToken,
+      );
+      if (accessToken) {
+        return res.send({
+          accessToken: accessToken,
+          refreshToken: refreshToken,
           success: true,
         });
       }
@@ -20,11 +36,8 @@ module.exports = ({ router, service, authMiddleware }) => {
   );
   router.post(
     '/logout',
-    authMiddleware,
     asyncHandler(async (req, res) => {
-      await service.logout(req.session.token);
-      res.clearCookie('session_id');
-
+      await service.logout(req.body.refreshToken);
       return res.send({
         success: true,
       });

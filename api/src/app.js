@@ -32,6 +32,7 @@ const postComposite = {};
 Object.assign(
   authMiddlewareComposite,
   newAuthMiddlewareComposite({
+    config,
     getAuthService: () => authComposite.service,
   }),
 );
@@ -39,8 +40,8 @@ Object.assign(
   authComposite,
   newAuthComposite({
     postgresqlComposite,
+    config,
     getUserService: () => userComposite.service,
-    authMiddleware: authMiddlewareComposite.middleware,
   }),
 );
 Object.assign(

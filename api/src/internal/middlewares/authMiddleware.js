@@ -1,10 +1,23 @@
-const extractService = require('#common/extractService');
-module.exports = (getAuthService) => async (req, res, next) => {
-  if (req.cookies.session_id) {
-    const authService = extractService(getAuthService);
-    const session = await authService.getByToken(req.cookies.session_id);
-    if (session) {
-      req.session = session;
+const jwt = require('jsonwebtoken');
+
+module.exports = (getAuthService, appKey) => async (req, res, next) => {
+  if (req.headers.authorization) {
+    const token = req.headers.authorization.split(' ')[1];
+    let decoded;
+    try {
+      decoded = await new Promise((resolve, reject) => {
+        jwt.verify(token, appKey, (err, result) => {
+          if (err) {
+            return reject(err);
+          }
+          resolve(result);
+        });
+      });
+    } catch (e) {
+      // do nothing
+    }
+    if (decoded) {
+      req.session = decoded;
       return next();
     }
   }

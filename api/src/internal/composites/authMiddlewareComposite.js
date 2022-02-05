@@ -1,7 +1,7 @@
 const authMiddleware = require('#internal/middlewares/authMiddleware');
 
-module.exports = ({ getAuthService }) => {
-  const middleware = authMiddleware(getAuthService);
+module.exports = ({ getAuthService, config }) => {
+  const middleware = authMiddleware(getAuthService, config.app.appKey);
 
   return {
     middleware,
