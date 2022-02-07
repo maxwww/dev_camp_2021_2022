@@ -8,7 +8,10 @@ module.exports = (storage, getUserService, appKey) => ({
     const user = await userService.getByEmail(email);
     if (user) {
       if (userService.checkPassword(password, user.password)) {
-        const accessToken = jwt.sign({ user_id: user.id }, appKey);
+        const accessToken = jwt.sign(
+          { user_id: user.id, name: user.name },
+          appKey,
+        );
         const refreshToken = uuidv4();
         await storage.create({
           user_id: user.id,
@@ -22,11 +25,33 @@ module.exports = (storage, getUserService, appKey) => ({
   refresh: async (refreshToken) => {
     const session = await storage.getByToken(refreshToken);
     if (session) {
-      const accessToken = jwt.sign({ user_id: session.user_id }, appKey);
+      const userService = extractService(getUserService);
+      const user = await userService.getById(session.user_id);
+      const accessToken = jwt.sign(
+        { user_id: user.id, name: user.name },
+        appKey,
+      );
       const refreshToken = uuidv4();
       await storage.deleteByToken(session.token);
       await storage.create({
         user_id: session.user_id,
+        token: refreshToken,
+      });
+      return { accessToken, refreshToken };
+    }
+    return {};
+  },
+  authorizeById: async (id) => {
+    const userService = extractService(getUserService);
+    const user = await userService.getById(id);
+    if (user) {
+      const accessToken = jwt.sign(
+        { user_id: user.id, name: user.name },
+        appKey,
+      );
+      const refreshToken = uuidv4();
+      await storage.create({
+        user_id: user.id,
         token: refreshToken,
       });
       return { accessToken, refreshToken };

@@ -1,5 +1,7 @@
 const jwt = require('jsonwebtoken');
 
+const UnauthorizedException = require('#internal/errors/UnauthorizedException');
+
 module.exports = (getAuthService, appKey) => async (req, res, next) => {
   if (req.headers.authorization) {
     const token = req.headers.authorization.split(' ')[1];
@@ -17,9 +19,10 @@ module.exports = (getAuthService, appKey) => async (req, res, next) => {
       // do nothing
     }
     if (decoded) {
-      req.session = decoded;
+      req.auth = decoded;
       return next();
     }
   }
-  res.sendStatus(401);
+
+  next(new UnauthorizedException());
 };

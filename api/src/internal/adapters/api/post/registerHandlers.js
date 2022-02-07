@@ -1,4 +1,5 @@
 const asyncHandler = require('#common/asyncHandler');
+const NotFoundException = require('#internal/errors/NotFoundException');
 
 module.exports = ({ router, service, authMiddleware }) => {
   router.get(
@@ -15,7 +16,8 @@ module.exports = ({ router, service, authMiddleware }) => {
       if (post) {
         return res.send(post);
       }
-      res.sendStatus(404);
+
+      throw new NotFoundException('post not found');
     }),
   );
   router.post(
@@ -24,7 +26,7 @@ module.exports = ({ router, service, authMiddleware }) => {
     asyncHandler(async (req, res) => {
       const newPostId = await service.create({
         ...req.body,
-        user_id: req.session.user_id,
+        user_id: req.auth.user_id,
       });
       return res.status(201).send({
         id: newPostId,

@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const cors = require('cors');
 
 // composites
 const newPostgresqlComposite = require('./internal/composites/postgresqlComposite');
@@ -52,7 +53,6 @@ Object.assign(
     authMiddleware: authMiddlewareComposite.middleware,
   }),
 );
-
 Object.assign(
   postComposite,
   newPostComposite({
@@ -61,7 +61,11 @@ Object.assign(
   }),
 );
 
+authComposite.googleStrategy.registerStrategy();
+
 // 3-rd party middlewares
+app.use(cors());
+app.use(authComposite.googleStrategy.passport.initialize());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());

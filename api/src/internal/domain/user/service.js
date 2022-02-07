@@ -2,7 +2,9 @@ const passwordHasher = require('#common/passwordHasher');
 
 module.exports = (storage, config) => ({
   create: async (user) => {
-    user.password = passwordHasher(user.password, config.app.salt);
+    if (user.password) {
+      user.password = passwordHasher(user.password, config.app.salt);
+    }
     const [newUserId] = await storage.create(user);
     // some additional logic
     // send an email for example
