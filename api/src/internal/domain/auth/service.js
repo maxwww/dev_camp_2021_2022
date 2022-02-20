@@ -11,6 +11,9 @@ module.exports = (storage, getUserService, appKey) => ({
         const accessToken = jwt.sign(
           { user_id: user.id, name: user.name },
           appKey,
+          {
+            expiresIn: '2m',
+          },
         );
         const refreshToken = uuidv4();
         await storage.create({
@@ -30,6 +33,9 @@ module.exports = (storage, getUserService, appKey) => ({
       const accessToken = jwt.sign(
         { user_id: user.id, name: user.name },
         appKey,
+        {
+          expiresIn: '2m',
+        },
       );
       const refreshToken = uuidv4();
       await storage.deleteByToken(session.token);
@@ -48,6 +54,9 @@ module.exports = (storage, getUserService, appKey) => ({
       const accessToken = jwt.sign(
         { user_id: user.id, name: user.name },
         appKey,
+        {
+          expiresIn: '2m',
+        },
       );
       const refreshToken = uuidv4();
       await storage.create({

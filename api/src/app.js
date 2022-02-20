@@ -61,11 +61,9 @@ Object.assign(
   }),
 );
 
-authComposite.googleStrategy.registerStrategy();
-
 // 3-rd party middlewares
 app.use(cors());
-app.use(authComposite.googleStrategy.passport.initialize());
+app.use(authComposite.passport.initialize());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
