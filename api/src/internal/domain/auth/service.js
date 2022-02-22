@@ -12,7 +12,7 @@ module.exports = (storage, getUserService, appKey) => ({
           { user_id: user.id, name: user.name },
           appKey,
           {
-            expiresIn: '2m',
+            expiresIn: '30m',
           },
         );
         const refreshToken = uuidv4();
@@ -34,7 +34,7 @@ module.exports = (storage, getUserService, appKey) => ({
         { user_id: user.id, name: user.name },
         appKey,
         {
-          expiresIn: '2m',
+          expiresIn: '30m',
         },
       );
       const refreshToken = uuidv4();
@@ -55,7 +55,7 @@ module.exports = (storage, getUserService, appKey) => ({
         { user_id: user.id, name: user.name },
         appKey,
         {
-          expiresIn: '2m',
+          expiresIn: '30m',
         },
       );
       const refreshToken = uuidv4();

@@ -9,6 +9,7 @@ const newUserComposite = require('./internal/composites/userComposite');
 const newPostComposite = require('./internal/composites/postComposite');
 const newAuthComposite = require('./internal/composites/authComposite');
 const newAuthMiddlewareComposite = require('./internal/composites/authMiddlewareComposite');
+const newAclMiddlewareComposite = require('./internal/composites/aclMiddlewareComposite');
 
 // // middlewares
 const errorMiddleware = require('./internal/middlewares/errorMiddleware');
@@ -26,6 +27,7 @@ const postgresqlComposite = newPostgresqlComposite(config.db);
 
 // TODO: refactor!!!
 const authMiddlewareComposite = {};
+const aclMiddlewareComposite = {};
 const authComposite = {};
 const userComposite = {};
 const postComposite = {};
@@ -35,6 +37,12 @@ Object.assign(
   newAuthMiddlewareComposite({
     config,
     getAuthService: () => authComposite.service,
+  }),
+);
+Object.assign(
+  aclMiddlewareComposite,
+  newAclMiddlewareComposite({
+    getUserService: () => userComposite.service,
   }),
 );
 Object.assign(
@@ -51,6 +59,7 @@ Object.assign(
     postgresqlComposite,
     config,
     authMiddleware: authMiddlewareComposite.middleware,
+    aclMiddleware: aclMiddlewareComposite.middleware,
   }),
 );
 Object.assign(
@@ -58,6 +67,7 @@ Object.assign(
   newPostComposite({
     postgresqlComposite,
     authMiddleware: authMiddlewareComposite.middleware,
+    aclMiddleware: aclMiddlewareComposite.middleware,
   }),
 );
 
