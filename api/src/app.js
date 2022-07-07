@@ -14,6 +14,7 @@ const newAclMiddlewareComposite = require('./internal/composites/aclMiddlewareCo
 // // middlewares
 const errorMiddleware = require('./internal/middlewares/errorMiddleware');
 const logMiddleware = require('./internal/middlewares/logMiddleware');
+const validateMiddleware = require('./internal/middlewares/validateMiddleware');
 
 // config
 const config = require('./internal/config');
@@ -60,6 +61,7 @@ Object.assign(
     config,
     authMiddleware: authMiddlewareComposite.middleware,
     aclMiddleware: aclMiddlewareComposite.middleware,
+    validateMiddleware: validateMiddleware,
   }),
 );
 Object.assign(

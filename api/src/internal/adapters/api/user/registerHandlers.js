@@ -1,6 +1,12 @@
 const asyncHandler = require('#common/asyncHandler');
 
-module.exports = ({ router, service, authMiddleware, aclMiddleware }) => {
+module.exports = ({
+  router,
+  service,
+  authMiddleware,
+  aclMiddleware,
+  validateMiddleware,
+}) => {
   router.get(
     '/',
     asyncHandler(async (req, res) => {
@@ -21,6 +27,18 @@ module.exports = ({ router, service, authMiddleware, aclMiddleware }) => {
   router.post(
     '/',
     authMiddleware,
+    validateMiddleware(
+      {
+        email: 'email|required|unique',
+        name: 'required|min:3',
+        age: 'required',
+      },
+      {
+        email: {
+          getResourceByField: (email) => service.getByEmail(email),
+        },
+      },
+    ),
     asyncHandler(async (req, res) => {
       const newUserId = await service.create(req.body);
       return res.status(201).send({
@@ -38,6 +56,19 @@ module.exports = ({ router, service, authMiddleware, aclMiddleware }) => {
       getResource: (req) => service.getById(req.params.id),
       isOwn: (resource, userId) => resource.id === userId,
     }),
+    validateMiddleware(
+      {
+        email: 'email|required|unique',
+        name: 'required|min:3',
+        age: 'required',
+      },
+      {
+        email: {
+          getResource: (req) => service.getById(req.params.id),
+          getResourceByField: (email) => service.getByEmail(email),
+        },
+      },
+    ),
     asyncHandler(async (req, res) => {
       const newUserId = await service.updateById(req.params.id, req.body);
       return res.status(201).send({

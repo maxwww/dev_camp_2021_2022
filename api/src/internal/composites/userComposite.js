@@ -9,10 +9,17 @@ module.exports = ({
   config,
   authMiddleware,
   aclMiddleware,
+  validateMiddleware,
 }) => {
   const storage = userStorage(postgresqlComposite.db);
   const service = userService(storage, config);
-  registerHandlers({ router, service, authMiddleware, aclMiddleware });
+  registerHandlers({
+    router,
+    service,
+    authMiddleware,
+    aclMiddleware,
+    validateMiddleware,
+  });
 
   return {
     storage,
