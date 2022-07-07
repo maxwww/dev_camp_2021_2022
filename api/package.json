@@ -12,7 +12,7 @@
   "author": "",
   "license": "ISC",
   "lint-staged": {
-    "src/*": "eslint"
+    "src/**/*.{js}": "eslint"
   },
   "imports": {
     "#common/*": "./src/common/*.js",
